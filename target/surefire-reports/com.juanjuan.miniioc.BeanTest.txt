@@ -1,0 +1,11 @@
+-------------------------------------------------------------------------------
+Test set: com.juanjuan.miniioc.BeanTest
+-------------------------------------------------------------------------------
+Tests run: 1, Failures: 0, Errors: 1, Skipped: 0, Time elapsed: 0.020 s <<< FAILURE! -- in com.juanjuan.miniioc.BeanTest
+com.juanjuan.miniioc.BeanTest.testLoadBeans -- Time elapsed: 0.012 s <<< ERROR!
+java.lang.NullPointerException: Cannot invoke "com.juanjuan.miniioc.service.UserService.hello()" because "userService" is null
+	at com.juanjuan.miniioc.BeanTest.testLoadBeans(BeanTest.java:15)
+	at java.base/java.lang.reflect.Method.invoke(Method.java:580)
+	at java.base/java.util.ArrayList.forEach(ArrayList.java:1597)
+	at java.base/java.util.ArrayList.forEach(ArrayList.java:1597)
+
