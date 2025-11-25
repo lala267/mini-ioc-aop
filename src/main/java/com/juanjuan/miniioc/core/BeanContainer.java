@@ -32,4 +32,9 @@ public class BeanContainer {
     public Set<Class<?>> getClasses() {
         return beanMap.keySet();
     }
+
+    public void injectDependencies() {
+        new DependencyInjector(this).doInjection();
+    }
+
 }
