@@ -11,18 +11,43 @@ public class AspectListExecutor {
         this.aspectInfos = aspectInfos;
     }
 
-    public Object execute(Class<?> targetClass, Method method, Object[] args, Object targetObject) throws Throwable {
-        // 1. before
-        for (AspectInfo aspectInfo : aspectInfos) {
-            aspectInfo.getAspectObject().before(targetClass, method, args);
+    public Object execute(Class<?> targetClass, Method method, Object[] args, Object target) throws Throwable {
+
+        // 1. 执行 before（按order升序）
+        for (AspectInfo info : aspectInfos) {
+            info.getAspectObject().before(targetClass, method, args);
         }
 
-        // 2. 执行实际方法
-        Object returnValue = method.invoke(targetObject, args);
+        Object returnValue = null;
+        Throwable throwable = null;
 
-        // 3. after
-        for (AspectInfo aspectInfo : aspectInfos) {
-            returnValue = aspectInfo.getAspectObject().after(targetClass, method, args, returnValue);
+        try {
+            // 2. 调用目标方法
+            method.setAccessible(true);
+            returnValue = method.invoke(target, args);
+
+            // 3. 执行 afterReturning
+            for (AspectInfo info : aspectInfos) {
+                returnValue = info.getAspectObject().afterReturning(
+                        targetClass, method, args, returnValue);
+            }
+
+        } catch (Throwable ex) {
+            throwable = ex.getCause() == null ? ex : ex.getCause();
+
+            // 4. 执行 afterThrowing
+            for (AspectInfo info : aspectInfos) {
+                info.getAspectObject().afterThrowing(
+                        targetClass, method, args, throwable);
+            }
+
+            throw throwable;
+
+        } finally {
+            // 5. after 不管如何都执行
+            for (AspectInfo info : aspectInfos) {
+                info.getAspectObject().after(targetClass, method, args);
+            }
         }
 
         return returnValue;

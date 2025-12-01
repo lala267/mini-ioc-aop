@@ -48,4 +48,16 @@ public class BeanTest {
         UserServiceInterface userService = container.getBean(UserServiceInterface.class);
         userService.hello();
     }
+
+    @Test
+    void testAOPday4() {
+        BeanContainer container = new BeanContainer();
+        container.loadBeans("com.juanjuan.miniioc");
+        container.injectDependencies();
+        new AspectWeaver(container).doAOP();
+
+        UserServiceInterface userService = container.getBean(UserServiceInterface.class);
+        userService.hello();
+    }
+
 }
